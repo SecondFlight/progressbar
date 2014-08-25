@@ -4,3 +4,7 @@ version: 1
 description: >
                  Progress Bar Demo
 commands:
+  progressbar:
+    description: Type /pb for info.
+  pb:
+    description: Type /pb for info.
