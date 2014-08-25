@@ -1,0 +1,6 @@
+name: ProgressBarDemo
+main: io.github.secondflight.ProgressBar.MainPlugin
+version: 1
+description: >
+                 Progress Bar Demo
+commands:
