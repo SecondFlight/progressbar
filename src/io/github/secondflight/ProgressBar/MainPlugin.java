@@ -52,6 +52,13 @@ public class MainPlugin extends JavaPlugin implements Listener {
 		}
 	}
 	
+	private void resetMaps (Player p) {
+		locationMap1.remove(p);
+		locationMap2.remove(p);
+		depthMap.remove(p);
+		selectionIsActive.remove(p);
+	}
+	
 	// Commands
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
 	{
@@ -71,8 +78,16 @@ public class MainPlugin extends JavaPlugin implements Listener {
 				
 				} else if (args.length == 1 && args[0].equalsIgnoreCase("new")) {
 					player.sendMessage("You must include a name. Type /pb for info.");
-				} else if (args.length == 2 && args[0].equalsIgnoreCase("new")) {
+				} else if (args.length >= 2 && args[0].equalsIgnoreCase("new")) {
 					player.sendMessage("Place a block where you want the upper left corner of your progress bar to be.");
+					
+					selectionIsActive.put(player, new Boolean (true));
+					
+					if (args.length == 2) {
+						depthMap.put(player, new Integer (1));
+					} else {
+						depthMap.put(player, new Integer (Integer.parseInt(args[2])));
+					}
 				}
 			}
 		} else {
