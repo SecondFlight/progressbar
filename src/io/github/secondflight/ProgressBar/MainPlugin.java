@@ -1,8 +1,6 @@
 package io.github.secondflight.ProgressBar;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -52,7 +50,7 @@ public class MainPlugin extends JavaPlugin implements Listener {
 		}
 	}
 	
-	private void resetMaps (Player p) {
+	private static void resetMaps (Player p) {
 		locationMap1.remove(p);
 		locationMap2.remove(p);
 		depthMap.remove(p);
