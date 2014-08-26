@@ -51,19 +51,23 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onBlockPlace (BlockPlaceEvent event) {
-		if (selectionIsActive.get(event.getPlayer()) == true) {
+		if (!(selectionIsActive.get(event.getPlayer()) == null)) {
 			Player player = event.getPlayer();
 			
 			event.setCancelled(true);
 			if (locationMap1.get(event.getPlayer()) == null && (locationMap2.get(event.getPlayer()) == null)) {
 				locationMap1.put(player, event.getBlock().getLocation());
 				materialMap1.put(player, event.getBlock().getType());
+				
+				player.sendMessage("Now, place a block where you want the bottom-right corner of the progress bar to be. Please make sure it shares a plane with the first.");
 			} else if (!(locationMap1.get(event.getPlayer()) == null) && (locationMap2.get(event.getPlayer()) == null)) {
 				locationMap2.put(player, event.getBlock().getLocation());
 				materialMap2.put(player, event.getBlock().getType());
 				
 				barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), materialMap1.get(player), materialMap2.get(player), depthMap.get(player)));
-			
+				
+				player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
+				
 				resetMaps(player);
 			}
 		}
@@ -82,7 +86,7 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	// Commands
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
 	{
-		if (sender instanceof Player) {
+		if (sender instanceof Player && (commandLabel.equalsIgnoreCase("pb") || commandLabel.equalsIgnoreCase("progressbar"))) {
 			Player player = (Player) sender;
 			if (commandLabel.equalsIgnoreCase("progressbar") || commandLabel.equalsIgnoreCase("pb")) {
 				
@@ -103,7 +107,7 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					player.sendMessage("-------------------------------------------");
 				
 				} else if (args.length == 1 && args[0].equalsIgnoreCase("new")) {
-					player.sendMessage("You must include a name. Type /pb for info.");
+					player.sendMessage(ChatColor.RED + "You must include a name. Type /pb for info.");
 				} else if (args.length >= 2 && args[0].equalsIgnoreCase("new")) {
 					player.sendMessage("Place a block where you want the upper left corner of your progress bar to be.");
 					
@@ -128,6 +132,7 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					for (ProgressBar pb:barList) {
 						if (pb.name.equals(args[1])) {
 							barList.remove(barList.indexOf(pb));
+							player.sendMessage("Progress bar '" + pb.name + "' has successfully been removed.");
 							errorMessage = false;
 							break;
 						}

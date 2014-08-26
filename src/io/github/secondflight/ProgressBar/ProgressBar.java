@@ -11,7 +11,7 @@ public class ProgressBar {
 	public String name;
 	
 	public ProgressBar (String barName, Location topLeft, Location bottomRight, Material fullMaterial, Material emptyMaterial, int depth) {
-		this.name = name;
+		this.name = barName;
 	}
 	
 }
