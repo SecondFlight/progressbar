@@ -1,10 +1,14 @@
 package io.github.secondflight.ProgressBar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,8 +24,13 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	
 	public static Map<Player, Location> locationMap1 = new HashMap<Player, Location>();
 	public static Map<Player, Location> locationMap2 = new HashMap<Player, Location>();
+	public static Map<Player, Material> materialMap1 = new HashMap<Player, Material>();
+	public static Map<Player, Material> materialMap2 = new HashMap<Player, Material>();
 	public static Map<Player, Integer> depthMap = new HashMap<Player, Integer>();
+	public static Map<Player, String> nameMap = new HashMap<Player, String>();
 	public static Map<Player, Boolean> selectionIsActive = new HashMap<Player, Boolean>();
+	
+	public List<ProgressBar> barList = new ArrayList<ProgressBar>();
 	
 	@Override
 	public void onDisable() {
@@ -42,10 +51,20 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onBlockPlace (BlockPlaceEvent event) {
-		if (!(selectionIsActive.get(event.getPlayer()) == null)) {
+		if (selectionIsActive.get(event.getPlayer()) == true) {
+			Player player = event.getPlayer();
+			
 			event.setCancelled(true);
 			if (locationMap1.get(event.getPlayer()) == null && (locationMap2.get(event.getPlayer()) == null)) {
+				locationMap1.put(player, event.getBlock().getLocation());
+				materialMap1.put(player, event.getBlock().getType());
+			} else if (!(locationMap1.get(event.getPlayer()) == null) && (locationMap2.get(event.getPlayer()) == null)) {
+				locationMap2.put(player, event.getBlock().getLocation());
+				materialMap2.put(player, event.getBlock().getType());
 				
+				barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), materialMap1.get(player), materialMap2.get(player), depthMap.get(player)));
+			
+				resetMaps(player);
 			}
 		}
 	}
@@ -53,7 +72,10 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	private static void resetMaps (Player p) {
 		locationMap1.remove(p);
 		locationMap2.remove(p);
+		materialMap1.remove(p);
+		materialMap2.remove(p);
 		depthMap.remove(p);
+		nameMap.remove(p);
 		selectionIsActive.remove(p);
 	}
 	
@@ -68,10 +90,16 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					// Command usage message
 					
 					player.sendMessage("-------------------------------------------");
+					player.sendMessage("Note: This plugin is not designed to be useful. It was created to show off the included progress bar class, the source for which can be found on github: http://www.github.com/SecondFlight/progressbar/");
+					player.sendMessage("");
 					player.sendMessage("Usage:");
 					player.sendMessage("");
 					player.sendMessage("/pb new (name) (depth)");
 					player.sendMessage("    -- Creates a new progress bar.");
+					player.sendMessage("/pb list");
+					player.sendMessage("    -- Lists the names of the active progress bars.");
+					player.sendMessage("/pb remove (name)");
+					player.sendMessage("    -- Removes a progress bar with the given name.");
 					player.sendMessage("-------------------------------------------");
 				
 				} else if (args.length == 1 && args[0].equalsIgnoreCase("new")) {
@@ -80,11 +108,33 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					player.sendMessage("Place a block where you want the upper left corner of your progress bar to be.");
 					
 					selectionIsActive.put(player, new Boolean (true));
+					nameMap.put(player, args[1]);
 					
 					if (args.length == 2) {
 						depthMap.put(player, new Integer (1));
 					} else {
 						depthMap.put(player, new Integer (Integer.parseInt(args[2])));
+					}
+				} else if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+					if (barList.size() > 0) {
+						for (ProgressBar pb:barList) {
+							player.sendMessage(pb.name);
+						}
+					} else {
+						player.sendMessage(ChatColor.RED + "There are no active progress bars.");
+					}
+				} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+					boolean errorMessage = true;
+					for (ProgressBar pb:barList) {
+						if (pb.name.equals(args[1])) {
+							barList.remove(barList.indexOf(pb));
+							errorMessage = false;
+							break;
+						}
+					}
+					
+					if (errorMessage == true) {
+						player.sendMessage(ChatColor.RED + "No progress bar exists with that name. Use " + ChatColor.WHITE + "/pb list" + ChatColor.RED + " to get a list of active progress bars.");
 					}
 				}
 			}
