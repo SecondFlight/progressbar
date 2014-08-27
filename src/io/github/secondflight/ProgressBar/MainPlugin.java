@@ -1,3 +1,10 @@
+/*
+ * Coded by Joshua Wade. https://www.github.com/secondflight/
+ * 
+ * This plugin can break things. It's good for testing the included
+ * class, but its usefulness pretty much ends there.
+ */
+
 package io.github.secondflight.ProgressBar;
 
 import java.util.ArrayList;
@@ -9,6 +16,7 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,9 +30,19 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	public final Logger logger = Logger.getLogger("Minecraft");
 	public static MainPlugin plugin;
 	
+	//first corner of first chunk
 	public static Map<Player, Location> locationMap1 = new HashMap<Player, Location>();
+	
+	//second corner of first chunk
 	public static Map<Player, Location> locationMap2 = new HashMap<Player, Location>();
+	
+	//opposite end of bar
+	public static Map<Player, Location> locationMap3 = new HashMap<Player, Location>();
+	
+	//full
 	public static Map<Player, Material> materialMap1 = new HashMap<Player, Material>();
+	
+	//empty
 	public static Map<Player, Material> materialMap2 = new HashMap<Player, Material>();
 	public static Map<Player, Integer> depthMap = new HashMap<Player, Integer>();
 	public static Map<Player, String> nameMap = new HashMap<Player, String>();
@@ -59,12 +77,27 @@ public class MainPlugin extends JavaPlugin implements Listener {
 				locationMap1.put(player, event.getBlock().getLocation());
 				materialMap1.put(player, event.getBlock().getType());
 				
-				player.sendMessage("Now, place a block where you want the bottom-right corner of the progress bar to be. Please make sure it shares a plane with the first.");
+				player.sendMessage("Now, place a block on the opposite corner of where you want the first chunk to be. Make sure it shares a plane with the last one.");
 			} else if (!(locationMap1.get(event.getPlayer()) == null) && (locationMap2.get(event.getPlayer()) == null)) {
-				locationMap2.put(player, event.getBlock().getLocation());
-				materialMap2.put(player, event.getBlock().getType());
+				if (locationMap1.get(player).getBlockX() == event.getBlock().getX()
+					|| locationMap1.get(player).getBlockY() == event.getBlock().getY()
+					|| locationMap1.get(player).getBlockZ() == event.getBlock().getZ()) {
+					locationMap2.put(player, event.getBlock().getLocation());
+					materialMap2.put(player, event.getBlock().getType());
 				
-				barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), materialMap1.get(player), materialMap2.get(player), depthMap.get(player)));
+					player.sendMessage("Finally, place a block where you want the opposite end of your progress bar to be.");
+				} else {
+					player.sendMessage(ChatColor.RED + "The second block must share a plane with the first Block. Use " + ChatColor.WHITE + "/pb exit" + ChatColor.RED + " to cancel selection.");
+				}
+				
+			} else if (!(locationMap1.get(event.getPlayer()) == null) && (!(locationMap2.get(event.getPlayer()) == null))) {
+				player.sendMessage("hi");
+				
+				locationMap3.put(player, event.getBlock().getLocation());
+				
+				locationMap3.get(player).getBlock().setType(Material.REDSTONE_BLOCK);
+				
+				barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), locationMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
 				
 				player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
 				
@@ -76,6 +109,7 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	private static void resetMaps (Player p) {
 		locationMap1.remove(p);
 		locationMap2.remove(p);
+		locationMap3.remove(p);
 		materialMap1.remove(p);
 		materialMap2.remove(p);
 		depthMap.remove(p);
@@ -104,12 +138,14 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					player.sendMessage("    -- Lists the names of the active progress bars.");
 					player.sendMessage("/pb remove (name)");
 					player.sendMessage("    -- Removes a progress bar with the given name.");
+					player.sendMessage("/pb exit");
+					player.sendMessage("    -- Exits out of selection mode.");
 					player.sendMessage("-------------------------------------------");
 				
 				} else if (args.length == 1 && args[0].equalsIgnoreCase("new")) {
 					player.sendMessage(ChatColor.RED + "You must include a name. Type /pb for info.");
 				} else if (args.length >= 2 && args[0].equalsIgnoreCase("new")) {
-					player.sendMessage("Place a block where you want the upper left corner of your progress bar to be.");
+					player.sendMessage("Place a block on one corner of where you want the first chunk of your progress bar to be.");
 					
 					selectionIsActive.put(player, new Boolean (true));
 					nameMap.put(player, args[1]);
@@ -141,6 +177,18 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					if (errorMessage == true) {
 						player.sendMessage(ChatColor.RED + "No progress bar exists with that name. Use " + ChatColor.WHITE + "/pb list" + ChatColor.RED + " to get a list of active progress bars.");
 					}
+				} else if (args.length == 1 && args[0].equalsIgnoreCase("exit")) {
+					if (!(selectionIsActive.get(player) == null)) {
+						if (selectionIsActive.get(player).booleanValue() == true) {
+							resetMaps(player);
+							player.sendMessage("You are no longer in selection mode.");
+						} else {
+							player.sendMessage(ChatColor.RED + "You are not in selection mode.");
+						}
+					} else {
+						player.sendMessage(ChatColor.RED + "You are not in selection mode.");
+					}
+					
 				}
 			}
 		} else {
