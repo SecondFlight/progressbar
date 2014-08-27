@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -91,11 +90,10 @@ public class MainPlugin extends JavaPlugin implements Listener {
 				}
 				
 			} else if (!(locationMap1.get(event.getPlayer()) == null) && (!(locationMap2.get(event.getPlayer()) == null))) {
-				player.sendMessage("hi");
-				
 				locationMap3.put(player, event.getBlock().getLocation());
 				
-				locationMap3.get(player).getBlock().setType(Material.REDSTONE_BLOCK);
+				// for testing
+				locationMap3.get(player).getBlock().setType(Material.IRON_BLOCK);
 				
 				barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), locationMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
 				

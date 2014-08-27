@@ -21,15 +21,20 @@ public class ProgressBar {
 		this.cornerTwo = cornerTwo;
 		this.end = end;
 		
-		cornerOne.getBlock().setType(Material.DIAMOND_BLOCK);
-		cornerTwo.getBlock().setType(Material.GOLD_BLOCK);
-		end.getBlock().setType(Material.REDSTONE_BLOCK);
+		this.full = fullMaterial;
+		this.empty = emptyMaterial;
 		
-		List<Location> list = calculateCluster(cornerOne, cornerTwo);
+		end.getBlock().setType(Material.IRON_BLOCK);
 		
-		for (Location l : list) {
-			l.getBlock().setType(full);
-		}
+		//try {
+			List<Location> list = calculateCluster(cornerOne, cornerTwo);
+		
+			for (Location l : list) {
+				l.getBlock().setType(full);
+			}
+		//} catch (Throwable ex){
+		//	ex.printStackTrace();
+		//}
 	}
 
 	private static List<Location> calculateCluster (Location cornerOne, Location cornerTwo) {
@@ -49,13 +54,12 @@ public class ProgressBar {
 		int maxY = Math.max(cornerOne.getBlockY(), cornerTwo.getBlockY());
 		int maxZ = Math.max(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
 		
-		System.out.println("laksjdf");
 		
 		for (int x = minX; x <= maxX; x++) {
-			for (int y = minX; y <= maxX; y++) {
-				for (int z = minX; z <= maxX; z++) {
-					new Location(cornerOne.getWorld(), x, y, z).getBlock().setType(Material.DIAMOND_BLOCK);
-					locList.add(new Location(cornerOne.getWorld(), x, y, z));
+			for (int y = minY; y <= maxY; y++) {
+				for (int z = minZ; z <= maxZ; z++) {
+					Location l = new Location(cornerOne.getWorld(), x, y, z);
+					locList.add(l);
 				}
 			}
 		}
