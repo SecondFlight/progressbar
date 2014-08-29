@@ -26,15 +26,13 @@ public class ProgressBar {
 		
 		end.getBlock().setType(Material.IRON_BLOCK);
 		
-		//try {
-			List<Location> list = calculateCluster(cornerOne, cornerTwo);
 		
-			for (Location l : list) {
-				l.getBlock().setType(full);
-			}
-		//} catch (Throwable ex){
-		//	ex.printStackTrace();
-		//}
+		List<Location> list = calculateCluster(cornerOne, cornerTwo);
+		
+		for (Location l : list) {
+			l.getBlock().setType(full);
+		}
+		
 	}
 
 	private static List<Location> calculateCluster (Location cornerOne, Location cornerTwo) {
@@ -59,7 +57,9 @@ public class ProgressBar {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
 					Location l = new Location(cornerOne.getWorld(), x, y, z);
-					locList.add(l);
+					if (!(locList.contains(l))) {
+						locList.add(l);
+					}
 				}
 			}
 		}

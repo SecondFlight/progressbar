@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -93,11 +94,29 @@ public class MainPlugin extends JavaPlugin implements Listener {
 				locationMap3.put(player, event.getBlock().getLocation());
 				
 				// for testing
+				player.sendMessage("1");
+				
+				
+				locationMap1.get(player).getBlock().setType(Material.IRON_BLOCK);
+				locationMap2.get(player).getBlock().setType(Material.IRON_BLOCK);
+				try {
 				locationMap3.get(player).getBlock().setType(Material.IRON_BLOCK);
+				} catch (Exception ex) {
+					player.sendMessage("aslfdkjalksdjflaksfdjlaksjdf");
+				}
 				
-				barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), locationMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
+				Location l = locationMap3.get(player);
+				System.out.println(l);
 				
-				player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
+				player.sendMessage("2");
+				Bukkit.getServer().getWorld(player.getWorld().getName()).getBlockAt(locationMap3.get(player)).setType(Material.IRON_BLOCK);
+				player.sendMessage("3");
+				
+				player.sendMessage(locationMap3.get(player).getBlockX() + " " + locationMap3.get(player).getBlockY() + " " + locationMap3.get(player).getBlockZ());
+				
+				//barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), locationMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
+				
+				//player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
 				
 				resetMaps(player);
 			}
