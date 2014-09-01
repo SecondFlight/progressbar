@@ -6,11 +6,12 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 public class ProgressBar {
-	Location cornerOne;
-	Location cornerTwo;
-	Location end;
+	Block cornerOne;
+	Block cornerTwo;
+	Block end;
 	Material full;
 	Material empty;
 	public String name;
@@ -38,10 +39,10 @@ public class ProgressBar {
 	 * Material that will be used as the empty texture.
 	 */
 	
-	public ProgressBar (String barName, Location cornerOne, Location cornerTwo, Location end, Material fullMaterial, Material emptyMaterial) {
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial) {
 		this.name = barName;
 		
-		List<List<Location>> locationList = new ArrayList<List<Location>>();
+		List<List<Block>> blockList = new ArrayList<List<Block>>();
 		
 		this.cornerOne = cornerOne;
 		this.cornerTwo = cornerTwo;
@@ -50,7 +51,7 @@ public class ProgressBar {
 		this.full = fullMaterial;
 		this.empty = emptyMaterial;
 		
-		end.getBlock().setType(Material.IRON_BLOCK);
+		end.setType(Material.IRON_BLOCK);
 		
 		int xDist = 0;
 		int yDist = 0;
@@ -62,16 +63,16 @@ public class ProgressBar {
 		
 		int dist = 0;
 		
-		if (cornerOne.getBlockX() == cornerTwo.getBlockX()) {
-			xDist = end.getBlockX() - cornerOne.getBlockX();
+		if (cornerOne.getX() == cornerTwo.getX()) {
+			xDist = end.getX() - cornerOne.getX();
 			dist = xDist;
 			xMove = 1;
-		} else if (cornerOne.getBlockY() == cornerTwo.getBlockY()) {
-			yDist = end.getBlockY() - cornerOne.getBlockY();
+		} else if (cornerOne.getY() == cornerTwo.getY()) {
+			yDist = end.getY() - cornerOne.getY();
 			dist = yDist;
 			yMove = 1;
-		} else if (cornerOne.getBlockZ() == cornerTwo.getBlockZ()) {
-			zDist = end.getBlockZ() - cornerOne.getBlockZ();
+		} else if (cornerOne.getZ() == cornerTwo.getZ()) {
+			zDist = end.getZ() - cornerOne.getZ();
 			dist = zDist;
 			zMove = 1;
 		} else {
@@ -79,44 +80,44 @@ public class ProgressBar {
 		}
 		
 		for (int i = 1; i <= dist; i++) {
-			List<Location> list = calculateCluster(cornerOne.add((double) xMove, (double) yMove, (double) zMove), cornerTwo.add((double) xMove, (double) yMove, (double) zMove));
-			locationList.add(list);
-			for (Location l : list) {
-				l.getBlock().setType(full);
+			List<Block> list = calculateCluster(cornerOne.getRelative(xMove, yMove, zMove), cornerTwo.getRelative(xMove, yMove, zMove));
+			blockList.add(list);
+			for (Block b : list) {
+				b.setType(full);
 			}
 		}
 	}
 
-	private static List<Location> calculateCluster (Location cornerOne, Location cornerTwo) {
-		List<Location> locList = new ArrayList<Location>();
+	private static List<Block> calculateCluster (Block cornerOne, Block cornerTwo) {
+		List<Block> blockList = new ArrayList<Block>();
 		
 		// if they are the same block
-		if (cornerOne.getBlock().equals(cornerTwo.getBlock())) {
-			locList.add(cornerOne);
-			return locList;
+		if (cornerOne.equals(cornerTwo)) {
+			blockList.add(cornerOne);
+			return blockList;
 		}
 		
-		int minX = Math.min(cornerOne.getBlockX(), cornerTwo.getBlockX());
-		int minY = Math.min(cornerOne.getBlockY(), cornerTwo.getBlockY());
-		int minZ = Math.min(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
+		int minX = (int) Math.min(cornerOne.getX(), cornerTwo.getX());
+		int minY = (int) Math.min(cornerOne.getY(), cornerTwo.getY());
+		int minZ = (int) Math.min(cornerOne.getZ(), cornerTwo.getZ());
 		
-		int maxX = Math.max(cornerOne.getBlockX(), cornerTwo.getBlockX());
-		int maxY = Math.max(cornerOne.getBlockY(), cornerTwo.getBlockY());
-		int maxZ = Math.max(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
+		int maxX = (int) Math.max(cornerOne.getX(), cornerTwo.getX());
+		int maxY = (int) Math.max(cornerOne.getY(), cornerTwo.getY());
+		int maxZ = (int) Math.max(cornerOne.getZ(), cornerTwo.getZ());
 		
 		
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					Location l = new Location(cornerOne.getWorld(), x, y, z);
-					if (!(locList.contains(l))) {
-						locList.add(l);
+					Block b = new Location(cornerOne.getWorld(), x, y, z).getBlock();
+					if (!(blockList.contains(b))) {
+						blockList.add(b);
 					}
 				}
 			}
 		}
 		
-		return locList;
+		return blockList;
 	}
 	
 }

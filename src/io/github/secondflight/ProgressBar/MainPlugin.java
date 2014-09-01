@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,13 +32,13 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	public static MainPlugin plugin;
 	
 	//first corner of first chunk
-	public static Map<Player, Location> locationMap1 = new HashMap<Player, Location>();
+	public static Map<Player, Block> blockMap1 = new HashMap<Player, Block>();
 	
 	//second corner of first chunk
-	public static Map<Player, Location> locationMap2 = new HashMap<Player, Location>();
+	public static Map<Player, Block> blockMap2 = new HashMap<Player, Block>();
 	
 	//opposite end of bar
-	public static Map<Player, Location> locationMap3 = new HashMap<Player, Location>();
+	public static Map<Player, Block> blockMap3 = new HashMap<Player, Block>();
 	
 	//full
 	public static Map<Player, Material> materialMap1 = new HashMap<Player, Material>();
@@ -73,16 +74,16 @@ public class MainPlugin extends JavaPlugin implements Listener {
 			Player player = event.getPlayer();
 			
 			event.setCancelled(true);
-			if (locationMap1.get(event.getPlayer()) == null && (locationMap2.get(event.getPlayer()) == null)) {
-				locationMap1.put(player, event.getBlock().getLocation());
+			if (blockMap1.get(event.getPlayer()) == null && (blockMap2.get(event.getPlayer()) == null)) {
+				blockMap1.put(player, event.getBlock());
 				materialMap1.put(player, event.getBlock().getType());
 				
 				player.sendMessage("Now, place a block on the opposite corner of where you want the first chunk to be. Make sure it shares a plane with the last one.");
-			} else if (!(locationMap1.get(event.getPlayer()) == null) && (locationMap2.get(event.getPlayer()) == null)) {
-				if (locationMap1.get(player).getBlockX() == event.getBlock().getX()
-					|| locationMap1.get(player).getBlockY() == event.getBlock().getY()
-					|| locationMap1.get(player).getBlockZ() == event.getBlock().getZ()) {
-					locationMap2.put(player, event.getBlock().getLocation());
+			} else if (!(blockMap1.get(event.getPlayer()) == null) && (blockMap2.get(event.getPlayer()) == null)) {
+				if (blockMap1.get(player).getX() == event.getBlock().getX()
+					|| blockMap1.get(player).getY() == event.getBlock().getY()
+					|| blockMap1.get(player).getZ() == event.getBlock().getZ()) {
+					blockMap2.put(player, event.getBlock());
 					materialMap2.put(player, event.getBlock().getType());
 				
 					player.sendMessage("Finally, place a block where you want the opposite end of your progress bar to be.");
@@ -90,33 +91,33 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					player.sendMessage(ChatColor.RED + "The second block must share a plane with the first Block. Use " + ChatColor.WHITE + "/pb exit" + ChatColor.RED + " to cancel selection.");
 				}
 				
-			} else if (!(locationMap1.get(event.getPlayer()) == null) && (!(locationMap2.get(event.getPlayer()) == null))) {
-				locationMap3.put(player, event.getBlock().getLocation());
+			} else if (!(blockMap1.get(event.getPlayer()) == null) && (!(blockMap2.get(event.getPlayer()) == null))) {
+				blockMap3.put(player, event.getBlock());
 				
 				// for testing
 				player.sendMessage("1");
 				
 				
-				locationMap1.get(player).getBlock().setType(Material.IRON_BLOCK);
-				locationMap2.get(player).getBlock().setType(Material.IRON_BLOCK);
+				blockMap1.get(player).setType(Material.IRON_BLOCK);
+				blockMap2.get(player).setType(Material.IRON_BLOCK);
 				try {
-				locationMap3.get(player).getBlock().setType(Material.IRON_BLOCK);
+				blockMap3.get(player).setType(Material.IRON_BLOCK);
 				} catch (Exception ex) {
 					player.sendMessage("aslfdkjalksdjflaksfdjlaksjdf");
 				}
 				
-				Location l = locationMap3.get(player);
-				System.out.println(l);
+				Block b = blockMap3.get(player);
+				System.out.println(b);
 				
 				player.sendMessage("2");
-				Bukkit.getServer().getWorld(player.getWorld().getName()).getBlockAt(locationMap3.get(player)).setType(Material.IRON_BLOCK);
+				//Bukkit.getServer().getWorld(player.getWorld().getName()).getBlockAt(blockMap3.get(player)).setType(Material.IRON_BLOCK);
 				player.sendMessage("3");
 				
-				player.sendMessage(locationMap3.get(player).getBlockX() + " " + locationMap3.get(player).getBlockY() + " " + locationMap3.get(player).getBlockZ());
+				player.sendMessage(blockMap3.get(player).getX() + " " + blockMap3.get(player).getY() + " " + blockMap3.get(player).getZ());
 				
-				//barList.add(new ProgressBar(nameMap.get(player), locationMap1.get(player), locationMap2.get(player), locationMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
+				barList.add(new ProgressBar(nameMap.get(player), blockMap1.get(player), blockMap2.get(player), blockMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
 				
-				//player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
+				player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
 				
 				resetMaps(player);
 			}
@@ -124,9 +125,9 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	}
 	
 	private static void resetMaps (Player p) {
-		locationMap1.remove(p);
-		locationMap2.remove(p);
-		locationMap3.remove(p);
+		blockMap1.remove(p);
+		blockMap2.remove(p);
+		blockMap3.remove(p);
 		materialMap1.remove(p);
 		materialMap2.remove(p);
 		depthMap.remove(p);
