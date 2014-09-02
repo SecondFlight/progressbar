@@ -12,8 +12,15 @@ public class ProgressBar {
 	Block cornerOne;
 	Block cornerTwo;
 	Block end;
+	
 	Material full;
 	Material empty;
+	
+	//Note: the following must be a number from 0 to 1 -- 0 is empty, 1 is full.
+	float percentFilled;
+	
+	List<List<Block>> blockList = new ArrayList<List<Block>>();
+	
 	public String name;
 	
 	/**
@@ -41,8 +48,6 @@ public class ProgressBar {
 	
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial) {
 		this.name = barName;
-		
-		List<List<Block>> blockList = new ArrayList<List<Block>>();
 		
 		this.cornerOne = cornerOne;
 		this.cornerTwo = cornerTwo;
@@ -79,13 +84,24 @@ public class ProgressBar {
 			throw new IllegalArgumentException("The blocks corrisponding to cornerOne and cornerTwo must share a plane");
 		}
 		
+		Block cornerOneClone = cornerOne;
+		Block cornerTwoClone = cornerTwo;
+		
 		for (int i = 1; i <= dist; i++) {
-			List<Block> list = calculateCluster(cornerOne.getRelative(xMove, yMove, zMove), cornerTwo.getRelative(xMove, yMove, zMove));
+			List<Block> list = calculateCluster(cornerOneClone, cornerTwoClone);
 			blockList.add(list);
-			for (Block b : list) {
-				b.setType(full);
-			}
+			
+			percentFilled = 0;
+			
+			cornerOneClone = cornerOneClone.getRelative(xMove, yMove, zMove);
+			cornerTwoClone = cornerTwoClone.getRelative(xMove, yMove, zMove);
 		}
+		
+		List<Block> list = calculateCluster(cornerOneClone, cornerTwoClone);
+		blockList.add(list);
+		
+		update();
+		
 	}
 
 	private static List<Block> calculateCluster (Block cornerOne, Block cornerTwo) {
@@ -118,6 +134,47 @@ public class ProgressBar {
 		}
 		
 		return blockList;
+	}
+	
+	/**
+	 * Sets the bar based on a percentage.
+	 * @param percentage
+	 * Percent full. Must be between 0 and 100.
+	 */
+	public void setPercentage (float percentage) {
+		percentFilled = (percentage / 100);
+		update();
+	}
+	
+	private void update () {
+		for (List<Block> list : blockList) {
+			//TODO: The following conversion will cause a bit of data loss in the case of long numbers. May be worth fixing.
+			int numberFilled = Math.round(percentFilled * blockList.size());
+			
+			if ((blockList.indexOf(list) + 1) <= numberFilled) {
+				for (Block b : list) {
+					b.setType(full);
+				}
+			} else {
+				for (Block b : list) {
+					b.setType(empty);
+				}
+			}
+		}
+	}
+	
+	private void clear () {
+		for (List<Block> list : blockList) {
+			for (Block b : list) {
+				b.setType(Material.AIR);
+			}
+		}
+	}
+	
+	public void clearSection (int index) {
+		for (Block b : blockList.get(index)) {
+			b.setType(Material.AIR);
+		}
 	}
 	
 }

@@ -84,7 +84,7 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					|| blockMap1.get(player).getY() == event.getBlock().getY()
 					|| blockMap1.get(player).getZ() == event.getBlock().getZ()) {
 					blockMap2.put(player, event.getBlock());
-					materialMap2.put(player, event.getBlock().getType());
+					
 				
 					player.sendMessage("Finally, place a block where you want the opposite end of your progress bar to be.");
 				} else {
@@ -93,18 +93,19 @@ public class MainPlugin extends JavaPlugin implements Listener {
 				
 			} else if (!(blockMap1.get(event.getPlayer()) == null) && (!(blockMap2.get(event.getPlayer()) == null))) {
 				blockMap3.put(player, event.getBlock());
+				materialMap2.put(player, event.getBlock().getType());
 				
 				// for testing
 				player.sendMessage("1");
 				
 				
-				blockMap1.get(player).setType(Material.IRON_BLOCK);
-				blockMap2.get(player).setType(Material.IRON_BLOCK);
-				try {
-				blockMap3.get(player).setType(Material.IRON_BLOCK);
-				} catch (Exception ex) {
-					player.sendMessage("aslfdkjalksdjflaksfdjlaksjdf");
-				}
+				//blockMap1.get(player).setType(Material.IRON_BLOCK);
+				//blockMap2.get(player).setType(Material.IRON_BLOCK);
+				//try {
+				//blockMap3.get(player).setType(Material.IRON_BLOCK);
+				//} catch (Exception ex) {
+				//	player.sendMessage("aslfdkjalksdjflaksfdjlaksjdf");
+				//}
 				
 				Block b = blockMap3.get(player);
 				System.out.println(b);
@@ -156,6 +157,8 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					player.sendMessage("    -- Lists the names of the active progress bars.");
 					player.sendMessage("/pb remove (name)");
 					player.sendMessage("    -- Removes a progress bar with the given name.");
+					player.sendMessage("/pb set (name) (percent)");
+					player.sendMessage("    -- Sets the percentage ammount that the progress bar with the given name should display.");
 					player.sendMessage("/pb exit");
 					player.sendMessage("    -- Exits out of selection mode.");
 					player.sendMessage("-------------------------------------------");
@@ -207,6 +210,30 @@ public class MainPlugin extends JavaPlugin implements Listener {
 						player.sendMessage(ChatColor.RED + "You are not in selection mode.");
 					}
 					
+				} else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
+					boolean displayError = true;
+					for (ProgressBar bar : barList) {
+						if (bar.name.equals(args[1])) {
+							displayError = false;
+							if (!(Integer.parseInt(args[2]) < 0 || Integer.parseInt(args[2]) > 100)) {
+								player.sendMessage("Setting the value of progress bar '" + bar.name + "' to " + args[2] + ".");
+								bar.setPercentage(Integer.parseInt(args[2]));
+							} else {
+								player.sendMessage(ChatColor.RED + "Must be a number between 0 and 100.");
+								break;
+							}
+						}
+					}
+					
+					if (displayError == true) {
+						player.sendMessage(ChatColor.RED + "This progress bar doesn't exist.");
+					}
+				} else if (args.length == 3 && args[0].equalsIgnoreCase("clearsection")) {
+					for (ProgressBar bar : barList) {
+						if (bar.name.equals(args[1])) {
+							bar.clearSection(Integer.parseInt(args[2]));
+						}
+					}
 				}
 			}
 		} else {
