@@ -16,6 +16,9 @@ public class ProgressBar {
 	Material full;
 	Material empty;
 	
+	int fullMaterialDataValue = -1;
+	int emptyMaterialDataValue = -1;
+	
 	//Note: the following must be a number from 0 to 1 -- 0 is empty, 1 is full.
 	float percentFilled;
 	
@@ -25,7 +28,7 @@ public class ProgressBar {
 	
 	/**
 	 * 
-	 * Constructor for a progress bar. I'm bad at writing descriptions.
+	 * Constructor for the ProgressBar object.
 	 * 
 	 * @param barName
 	 * Name of the progress bar. Use null if you don't need a name.
@@ -47,6 +50,42 @@ public class ProgressBar {
 	 */
 	
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial) {
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, BlockColor fullMaterialColor, Material emptyMaterial, BlockColor emptyMaterialColor) {
+		setFullColor (fullMaterialColor);
+		setEmptyColor (emptyMaterialColor);
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, BlockColor fullMaterialColor, Material emptyMaterial) {
+		setFullColor (fullMaterialColor);
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial, BlockColor emptyMaterialColor) {
+		setEmptyColor (emptyMaterialColor);
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial, byte emptyData) {
+		this.emptyMaterialDataValue = emptyData;
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, byte fullData, Material emptyMaterial) {
+		this.fullMaterialDataValue = fullData;
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, byte fullData, Material emptyMaterial, byte emptyData) {
+		this.emptyMaterialDataValue = emptyData;
+		this.fullMaterialDataValue = fullData;
+		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
+	}
+	
+	private void init (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial) {
 		this.name = barName;
 		
 		this.cornerOne = cornerOne;
@@ -118,10 +157,123 @@ public class ProgressBar {
 		percentFilled = 0;
 		
 		update();
-		
-		System.out.println("Progress bar constructor has finished.");
 	}
 
+	private void setFullColor (BlockColor color) {
+		this.fullMaterialDataValue = getBlockColorDataValue (color);
+	}
+	
+	private void setEmptyColor (BlockColor color) {
+		this.emptyMaterialDataValue = getBlockColorDataValue (color);
+	}
+	
+	// Note: this will return -1 if it fails, which I don't think it can.
+	public static int getBlockColorDataValue (BlockColor color) {
+		switch (color) {
+			case WHITE:
+				return 0;
+			
+			case ORANGE:
+				return 1;
+				
+			case MAGENTA:
+				return 2;
+			
+			case LIGHT_BLUE:
+				return 3;
+				
+			case YELLOW:
+				return 4;
+			
+			case LIME:
+				return 5;
+				
+			case PINK:
+				return 6;
+			
+			case GRAY:
+				return 7;
+				
+			case LIGHT_GRAY:
+				return 8;
+				
+			case CYAN:
+				return 9;
+				
+			case PURPLE:
+				return 10;
+				
+			case BLUE:
+				return 11;
+				
+			case BROWN:
+				return 12;
+				
+			case GREEN:
+				return 13;
+				
+			case RED:
+				return 14;
+				
+			case BLACK:
+				return 15;
+		}	
+		return -1;
+	}
+	
+	public static BlockColor getBlockColorFromDataValue (int data) {
+		switch (data) {
+			case 0:
+				return BlockColor.WHITE;
+			
+			case 1:
+				return BlockColor.ORANGE;
+				
+			case 2:
+				return BlockColor.MAGENTA;
+			
+			case 3:
+				return BlockColor.LIGHT_BLUE;
+				
+			case 4:
+				return BlockColor.YELLOW;
+			
+			case 5:
+				return BlockColor.LIME;
+				
+			case 6:
+				return BlockColor.PINK;
+			
+			case 7:
+				return BlockColor.GRAY;
+				
+			case 8:
+				return BlockColor.LIGHT_GRAY;
+				
+			case 9:
+				return BlockColor.CYAN;
+				
+			case 10:
+				return BlockColor.PURPLE;
+				
+			case 11:
+				return BlockColor.BLUE;
+				
+			case 12:
+				return BlockColor.BROWN;
+				
+			case 13:
+				return BlockColor.GREEN;
+				
+			case 14:
+				return BlockColor.RED;
+				
+			case 15:
+				return BlockColor.BLACK;
+		}	
+		return null;
+	}
+	
 	private static List<Block> calculateCluster (Block cornerOne, Block cornerTwo) {
 		List<Block> blockList = new ArrayList<Block>();
 		
@@ -164,6 +316,7 @@ public class ProgressBar {
 		update();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void update () {
 		for (List<Block> list : blockList) {
 			//TODO: The following conversion will cause a bit of data loss in the case of long numbers. May be worth fixing.
@@ -172,16 +325,25 @@ public class ProgressBar {
 			if ((blockList.indexOf(list) + 1) <= numberFilled) {
 				for (Block b : list) {
 					b.setType(full);
+					if (!(this.fullMaterialDataValue == -1)) {
+						b.setData((byte) fullMaterialDataValue);
+					}
 				}
 			} else {
 				for (Block b : list) {
 					b.setType(empty);
+					if (!(this.emptyMaterialDataValue == -1)) {
+						b.setData((byte) emptyMaterialDataValue);
+					}
 				}
 			}
 		}
 	}
 	
-	private void clear () {
+	/**
+	 * Sets the blocks that the progress bar has stored to air.
+	 */
+	public void clear () {
 		for (List<Block> list : blockList) {
 			for (Block b : list) {
 				b.setType(Material.AIR);
@@ -193,6 +355,10 @@ public class ProgressBar {
 		for (Block b : blockList.get(index)) {
 			b.setType(Material.AIR);
 		}
+	}
+	
+	public static enum BlockColor {
+		WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK
 	}
 	
 }

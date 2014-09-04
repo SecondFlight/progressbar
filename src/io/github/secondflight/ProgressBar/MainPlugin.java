@@ -7,6 +7,8 @@
 
 package io.github.secondflight.ProgressBar;
 
+import io.github.secondflight.ProgressBar.ProgressBar.BlockColor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +44,12 @@ public class MainPlugin extends JavaPlugin implements Listener {
 	
 	//full
 	public static Map<Player, Material> materialMap1 = new HashMap<Player, Material>();
+	public static Map<Player, BlockColor> colorMap1 = new HashMap<Player, BlockColor>();
 	
 	//empty
 	public static Map<Player, Material> materialMap2 = new HashMap<Player, Material>();
+	public static Map<Player, BlockColor> colorMap2 = new HashMap<Player, BlockColor>();
+	
 	public static Map<Player, Integer> depthMap = new HashMap<Player, Integer>();
 	public static Map<Player, String> nameMap = new HashMap<Player, String>();
 	public static Map<Player, Boolean> selectionIsActive = new HashMap<Player, Boolean>();
@@ -77,6 +82,9 @@ public class MainPlugin extends JavaPlugin implements Listener {
 			if (blockMap1.get(event.getPlayer()) == null && (blockMap2.get(event.getPlayer()) == null)) {
 				blockMap1.put(player, event.getBlock());
 				materialMap1.put(player, event.getBlock().getType());
+				if ((event.getBlock().getType() == Material.WOOL || event.getBlock().getType() == Material.STAINED_GLASS || event.getBlock().getType() == Material.STAINED_CLAY)) {
+					colorMap1.put(player, ProgressBar.getBlockColorFromDataValue(event.getBlock().getData()));
+				}
 				
 				player.sendMessage("Now, place a block on the opposite corner of where you want the first chunk to be. Make sure it shares a plane with the last one.");
 			} else if (!(blockMap1.get(event.getPlayer()) == null) && (blockMap2.get(event.getPlayer()) == null)) {
@@ -94,6 +102,9 @@ public class MainPlugin extends JavaPlugin implements Listener {
 			} else if (!(blockMap1.get(event.getPlayer()) == null) && (!(blockMap2.get(event.getPlayer()) == null))) {
 				blockMap3.put(player, event.getBlock());
 				materialMap2.put(player, event.getBlock().getType());
+				if ((event.getBlock().getType() == Material.WOOL || event.getBlock().getType() == Material.STAINED_GLASS || event.getBlock().getType() == Material.STAINED_CLAY)) {
+					colorMap2.put(player, ProgressBar.getBlockColorFromDataValue(event.getBlock().getData()));
+				}
 				
 				// for testing
 				player.sendMessage("1");
@@ -116,7 +127,22 @@ public class MainPlugin extends JavaPlugin implements Listener {
 				
 				player.sendMessage(blockMap3.get(player).getX() + " " + blockMap3.get(player).getY() + " " + blockMap3.get(player).getZ());
 				
-				barList.add(new ProgressBar(nameMap.get(player), blockMap1.get(player), blockMap2.get(player), blockMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
+				boolean materialOneIsColored = false;
+				boolean materialTwoIsColored = false;
+				
+				if (colorMap1.containsKey(player) && !(colorMap2.containsKey(player))) {
+					barList.add(new ProgressBar(nameMap.get(player), blockMap1.get(player), blockMap2.get(player), blockMap3.get(player), materialMap1.get(player), colorMap1.get(player), materialMap2.get(player)));
+					System.out.println("1 true 2 false");
+				} else if (!(colorMap1.containsKey(player)) && colorMap2.containsKey(player)) {
+					barList.add(new ProgressBar(nameMap.get(player), blockMap1.get(player), blockMap2.get(player), blockMap3.get(player), materialMap1.get(player), materialMap2.get(player), colorMap2.get(player)));
+					System.out.println("1 false 2 true");
+				} else if (colorMap1.containsKey(player) && colorMap2.containsKey(player)) {
+					barList.add(new ProgressBar(nameMap.get(player), blockMap1.get(player), blockMap2.get(player), blockMap3.get(player), materialMap1.get(player), colorMap1.get(player), materialMap2.get(player), colorMap2.get(player)));
+					System.out.println("both true");
+				} else {
+					barList.add(new ProgressBar(nameMap.get(player), blockMap1.get(player), blockMap2.get(player), blockMap3.get(player), materialMap1.get(player), materialMap2.get(player)));
+					System.out.println("both false");
+				}
 				
 				player.sendMessage("Progress bar '" + nameMap.get(player) + "' has been successfully created.");
 				
@@ -131,6 +157,8 @@ public class MainPlugin extends JavaPlugin implements Listener {
 		blockMap3.remove(p);
 		materialMap1.remove(p);
 		materialMap2.remove(p);
+		colorMap1.remove(p);
+		colorMap2.remove(p);
 		depthMap.remove(p);
 		nameMap.remove(p);
 		selectionIsActive.remove(p);
@@ -186,8 +214,9 @@ public class MainPlugin extends JavaPlugin implements Listener {
 					}
 				} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 					boolean errorMessage = true;
-					for (ProgressBar pb:barList) {
+					for (ProgressBar pb : barList) {
 						if (pb.name.equals(args[1])) {
+							pb.clear();
 							barList.remove(barList.indexOf(pb));
 							player.sendMessage("Progress bar '" + pb.name + "' has successfully been removed.");
 							errorMessage = false;
