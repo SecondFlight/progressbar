@@ -71,37 +71,55 @@ public class ProgressBar {
 		if (cornerOne.getX() == cornerTwo.getX()) {
 			xDist = end.getX() - cornerOne.getX();
 			dist = xDist;
-			xMove = 1;
+			if (cornerOne.getX() <= end.getX()) {
+				xMove = 1;
+			} else {
+				xMove = -1;
+			}
 		} else if (cornerOne.getY() == cornerTwo.getY()) {
 			yDist = end.getY() - cornerOne.getY();
 			dist = yDist;
-			yMove = 1;
+			if (cornerOne.getY() <= end.getY()) {
+				yMove = 1;
+			} else {
+				yMove = -1;
+			}
 		} else if (cornerOne.getZ() == cornerTwo.getZ()) {
 			zDist = end.getZ() - cornerOne.getZ();
 			dist = zDist;
-			zMove = 1;
+			if (cornerOne.getZ() <= end.getZ()) {
+				zMove = 1;
+			} else {
+				zMove = -1;
+			}
 		} else {
 			throw new IllegalArgumentException("The blocks corrisponding to cornerOne and cornerTwo must share a plane");
 		}
 		
+		System.out.println(dist);
+		
 		Block cornerOneClone = cornerOne;
 		Block cornerTwoClone = cornerTwo;
 		
-		for (int i = 1; i <= dist; i++) {
+		for (int i = 1; i <= Math.abs(dist); i++) {
+			System.out.println("Calculating cluster for " + cornerOneClone.getX() + ", " + cornerOneClone.getY() + ", " + cornerOneClone.getZ() + " and " + cornerTwoClone.getX() + ", " + cornerTwoClone.getY() + ", " + cornerTwoClone.getZ() + ".");
 			List<Block> list = calculateCluster(cornerOneClone, cornerTwoClone);
 			blockList.add(list);
 			
-			percentFilled = 0;
-			
+			System.out.println("Moving... (" + xMove + ", " + yMove + ", " + zMove + ")");
 			cornerOneClone = cornerOneClone.getRelative(xMove, yMove, zMove);
 			cornerTwoClone = cornerTwoClone.getRelative(xMove, yMove, zMove);
 		}
 		
+		System.out.println("Final cluster calculation...");
 		List<Block> list = calculateCluster(cornerOneClone, cornerTwoClone);
 		blockList.add(list);
 		
+		percentFilled = 0;
+		
 		update();
 		
+		System.out.println("Progress bar constructor has finished.");
 	}
 
 	private static List<Block> calculateCluster (Block cornerOne, Block cornerTwo) {
