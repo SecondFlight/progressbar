@@ -3,7 +3,6 @@ package io.github.secondflight.ProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -53,32 +52,190 @@ public class ProgressBar {
 		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
 	}
 	
+	/**
+	 * 
+	 * Constructor for the ProgressBar object.
+	 * 
+	 * @param barName
+	 * Name of the progress bar. Use null if you don't need a name.
+	 * 
+	 * @param cornerOne
+	 * One corner of the first chunk.
+	 * 
+	 * @param cornerTwo
+	 * Opposite corner of the first chunk. Must share a plane with the first corner.
+	 * 
+	 * @param end
+	 * Location somewhere on the end chunk of the progress bar.
+	 * 
+	 * @param fullMaterial
+	 * Material that will be used as the filled texture.
+	 * 
+	 * @param fullMaterialColor
+	 * BlockColor enum for the full material. Use this to set the color of colored blocks such as wool or stained glass.
+	 * 
+	 * @param emptyMaterial
+	 * Material that will be used as the empty texture.
+	 * 
+	 * @param emptyMaterialColor
+	 * BlockColor enum for the empty material. Use this to set the color of colored blocks such as wool or stained glass.
+	 */
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, BlockColor fullMaterialColor, Material emptyMaterial, BlockColor emptyMaterialColor) {
 		setFullColor (fullMaterialColor);
 		setEmptyColor (emptyMaterialColor);
 		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
 	}
 	
+	/**
+	 * 
+	 * Constructor for the ProgressBar object.
+	 * 
+	 * @param barName
+	 * Name of the progress bar. Use null if you don't need a name.
+	 * 
+	 * @param cornerOne
+	 * One corner of the first chunk.
+	 * 
+	 * @param cornerTwo
+	 * Opposite corner of the first chunk. Must share a plane with the first corner.
+	 * 
+	 * @param end
+	 * Location somewhere on the end chunk of the progress bar.
+	 * 
+	 * @param fullMaterial
+	 * Material that will be used as the filled texture.
+	 * 
+	 * @param fullMaterialColor
+	 * BlockColor enum for the full material. Use this to set the color of colored blocks such as wool or stained glass.
+	 * 
+	 * @param emptyMaterial
+	 * Material that will be used as the empty texture.
+	 * 
+	 */
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, BlockColor fullMaterialColor, Material emptyMaterial) {
 		setFullColor (fullMaterialColor);
 		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
 	}
 	
+	/**
+	 * 
+	 * Constructor for the ProgressBar object.
+	 * 
+	 * @param barName
+	 * Name of the progress bar. Use null if you don't need a name.
+	 * 
+	 * @param cornerOne
+	 * One corner of the first chunk.
+	 * 
+	 * @param cornerTwo
+	 * Opposite corner of the first chunk. Must share a plane with the first corner.
+	 * 
+	 * @param end
+	 * Location somewhere on the end chunk of the progress bar.
+	 * 
+	 * @param fullMaterial
+	 * Material that will be used as the filled texture.
+	 * 
+	 * @param emptyMaterial
+	 * Material that will be used as the empty texture.
+	 * 
+	 * @param emptyMaterialColor
+	 * BlockColor enum for the empty material. Use this to set the color of colored blocks such as wool or stained glass.
+	 */
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial, BlockColor emptyMaterialColor) {
 		setEmptyColor (emptyMaterialColor);
 		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
 	}
 	
+	/**
+	 * 
+	 * Constructor for the ProgressBar object.
+	 * 
+	 * @param barName
+	 * Name of the progress bar. Use null if you don't need a name.
+	 * 
+	 * @param cornerOne
+	 * One corner of the first chunk.
+	 * 
+	 * @param cornerTwo
+	 * Opposite corner of the first chunk. Must share a plane with the first corner.
+	 * 
+	 * @param end
+	 * Location somewhere on the end chunk of the progress bar.
+	 * 
+	 * @param fullMaterial
+	 * Material that will be used as the filled texture.
+	 * 
+	 * @param emptyMaterial
+	 * Material that will be used as the empty texture.
+	 * 
+	 * @param emptyData
+	 * Data value for the empty texture.
+	 */
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, Material emptyMaterial, byte emptyData) {
 		this.emptyMaterialDataValue = emptyData;
 		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
 	}
 	
+	/**
+	 * 
+	 * Constructor for the ProgressBar object.
+	 * 
+	 * @param barName
+	 * Name of the progress bar. Use null if you don't need a name.
+	 * 
+	 * @param cornerOne
+	 * One corner of the first chunk.
+	 * 
+	 * @param cornerTwo
+	 * Opposite corner of the first chunk. Must share a plane with the first corner.
+	 * 
+	 * @param end
+	 * Location somewhere on the end chunk of the progress bar.
+	 * 
+	 * @param fullMaterial
+	 * Material that will be used as the filled texture.
+	 * 
+	 * @param fullData
+	 * Data value for the full texture
+	 * 
+	 * @param emptyMaterial
+	 * Material that will be used as the empty texture.
+	 * 
+	 */
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, byte fullData, Material emptyMaterial) {
 		this.fullMaterialDataValue = fullData;
 		init (barName, cornerOne, cornerTwo, end, fullMaterial, emptyMaterial);
 	}
 	
+	/**
+	 * 
+	 * Constructor for the ProgressBar object.
+	 * 
+	 * @param barName
+	 * Name of the progress bar. Use null if you don't need a name.
+	 * 
+	 * @param cornerOne
+	 * One corner of the first chunk.
+	 * 
+	 * @param cornerTwo
+	 * Opposite corner of the first chunk. Must share a plane with the first corner.
+	 * 
+	 * @param end
+	 * Location somewhere on the end chunk of the progress bar.
+	 * 
+	 * @param fullMaterial
+	 * Material that will be used as the filled texture.
+	 * 
+	 * @param fullData
+	 * Data value for the full texture
+	 * 
+	 * @param emptyMaterial
+	 * Material that will be used as the empty texture.
+	 * 
+	 * @param emptyData
+	 * Data value for the empty texture.
+	 */
 	public ProgressBar (String barName, Block cornerOne, Block cornerTwo, Block end, Material fullMaterial, byte fullData, Material emptyMaterial, byte emptyData) {
 		this.emptyMaterialDataValue = emptyData;
 		this.fullMaterialDataValue = fullData;
@@ -95,18 +252,20 @@ public class ProgressBar {
 		this.full = fullMaterial;
 		this.empty = emptyMaterial;
 		
-		end.setType(Material.IRON_BLOCK);
-		
+		// dimensions of the progress bar
 		int xDist = 0;
 		int yDist = 0;
 		int zDist = 0;
 		
+		// how much to move in each dimension for each iteration
 		int xMove = 0;
 		int yMove = 0;
 		int zMove = 0;
 		
+		// length of the progress bar
 		int dist = 0;
 		
+		// calculates the previous three groups of variables
 		if (cornerOne.getX() == cornerTwo.getX()) {
 			xDist = end.getX() - cornerOne.getX();
 			dist = xDist;
@@ -135,11 +294,11 @@ public class ProgressBar {
 			throw new IllegalArgumentException("The blocks corrisponding to cornerOne and cornerTwo must share a plane");
 		}
 		
-		System.out.println(dist);
-		
+		// Clones the two corner inputs for calcualtion.
 		Block cornerOneClone = cornerOne;
 		Block cornerTwoClone = cornerTwo;
 		
+		// Iterates through every chunk of the progress bar and adds the list returned by calculateCluster() to another list
 		for (int i = 1; i <= Math.abs(dist); i++) {
 			System.out.println("Calculating cluster for " + cornerOneClone.getX() + ", " + cornerOneClone.getY() + ", " + cornerOneClone.getZ() + " and " + cornerTwoClone.getX() + ", " + cornerTwoClone.getY() + ", " + cornerTwoClone.getZ() + ".");
 			List<Block> list = calculateCluster(cornerOneClone, cornerTwoClone);
@@ -150,6 +309,7 @@ public class ProgressBar {
 			cornerTwoClone = cornerTwoClone.getRelative(xMove, yMove, zMove);
 		}
 		
+		// one final calculation that the for loop misses
 		System.out.println("Final cluster calculation...");
 		List<Block> list = calculateCluster(cornerOneClone, cornerTwoClone);
 		blockList.add(list);
@@ -167,122 +327,18 @@ public class ProgressBar {
 		this.emptyMaterialDataValue = getBlockColorDataValue (color);
 	}
 	
-	// Note: this will return -1 if it fails, which I don't think it can.
-	public static int getBlockColorDataValue (BlockColor color) {
-		switch (color) {
-			case WHITE:
-				return 0;
-			
-			case ORANGE:
-				return 1;
-				
-			case MAGENTA:
-				return 2;
-			
-			case LIGHT_BLUE:
-				return 3;
-				
-			case YELLOW:
-				return 4;
-			
-			case LIME:
-				return 5;
-				
-			case PINK:
-				return 6;
-			
-			case GRAY:
-				return 7;
-				
-			case LIGHT_GRAY:
-				return 8;
-				
-			case CYAN:
-				return 9;
-				
-			case PURPLE:
-				return 10;
-				
-			case BLUE:
-				return 11;
-				
-			case BROWN:
-				return 12;
-				
-			case GREEN:
-				return 13;
-				
-			case RED:
-				return 14;
-				
-			case BLACK:
-				return 15;
-		}	
-		return -1;
-	}
-	
-	public static BlockColor getBlockColorFromDataValue (int data) {
-		switch (data) {
-			case 0:
-				return BlockColor.WHITE;
-			
-			case 1:
-				return BlockColor.ORANGE;
-				
-			case 2:
-				return BlockColor.MAGENTA;
-			
-			case 3:
-				return BlockColor.LIGHT_BLUE;
-				
-			case 4:
-				return BlockColor.YELLOW;
-			
-			case 5:
-				return BlockColor.LIME;
-				
-			case 6:
-				return BlockColor.PINK;
-			
-			case 7:
-				return BlockColor.GRAY;
-				
-			case 8:
-				return BlockColor.LIGHT_GRAY;
-				
-			case 9:
-				return BlockColor.CYAN;
-				
-			case 10:
-				return BlockColor.PURPLE;
-				
-			case 11:
-				return BlockColor.BLUE;
-				
-			case 12:
-				return BlockColor.BROWN;
-				
-			case 13:
-				return BlockColor.GREEN;
-				
-			case 14:
-				return BlockColor.RED;
-				
-			case 15:
-				return BlockColor.BLACK;
-		}	
-		return null;
-	}
-	
+		
 	private static List<Block> calculateCluster (Block cornerOne, Block cornerTwo) {
 		List<Block> blockList = new ArrayList<Block>();
 		
-		// if they are the same block
+		// if they are the same block - this avoids the calculation, although it's rather pointless
+		// now that I think about it
 		if (cornerOne.equals(cornerTwo)) {
 			blockList.add(cornerOne);
 			return blockList;
 		}
 		
+		// a bit of self-explanatory variable setting for the next part
 		int minX = (int) Math.min(cornerOne.getX(), cornerTwo.getX());
 		int minY = (int) Math.min(cornerOne.getY(), cornerTwo.getY());
 		int minZ = (int) Math.min(cornerOne.getZ(), cornerTwo.getZ());
@@ -291,7 +347,7 @@ public class ProgressBar {
 		int maxY = (int) Math.max(cornerOne.getY(), cornerTwo.getY());
 		int maxZ = (int) Math.max(cornerOne.getZ(), cornerTwo.getZ());
 		
-		
+		// Gets the blocks in the square formed by cornerOne and cornerTwo and adds them to a list
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
@@ -314,6 +370,38 @@ public class ProgressBar {
 	public void setPercentage (float percentage) {
 		percentFilled = (percentage / 100);
 		update();
+	}
+	
+	/**
+	 * Sets the bar based on a ratio
+	 * @param numerator
+	 * @param denominator
+	 */
+	public void setRatio (int numerator, int denominator) {
+		if (denominator == 0) {
+			throw new IllegalArgumentException ("Denominator cannot be 0.");
+		}
+		
+		if (!((numerator / denominator) > 1 || (numerator / denominator) < 0)) {
+			percentFilled = (numerator / denominator);
+			update();
+		} else {
+			throw new IllegalArgumentException ("The numerator divided by the denominator must be between 0 and 1.");
+		}
+	}
+	
+	/**
+	 * Sets the amount of the progress bar as a float between 0 and 1 -- 0 is empty, 1 is full.
+	 * @param ammount
+	 * 
+	 */
+	public void setDirect (float ammount) {
+		if (ammount <= 0 && ammount >= 1) {
+			percentFilled = ammount;
+			update();
+		} else {
+			throw new IllegalArgumentException("Must be between 0 and 1.");
+		}
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -351,14 +439,124 @@ public class ProgressBar {
 		}
 	}
 	
+	// For testing. Sets the given section to air.
 	public void clearSection (int index) {
 		for (Block b : blockList.get(index)) {
 			b.setType(Material.AIR);
 		}
 	}
 	
+	// Enum for colors
 	public static enum BlockColor {
 		WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK
 	}
 	
+	// Methods for the enum below
+	// Note: this will return -1 if it fails, which I don't think it can.
+		public static int getBlockColorDataValue (BlockColor color) {
+			switch (color) {
+				case WHITE:
+					return 0;
+				
+				case ORANGE:
+					return 1;
+					
+				case MAGENTA:
+					return 2;
+				
+				case LIGHT_BLUE:
+					return 3;
+					
+				case YELLOW:
+					return 4;
+				
+				case LIME:
+					return 5;
+					
+				case PINK:
+					return 6;
+				
+				case GRAY:
+					return 7;
+					
+				case LIGHT_GRAY:
+					return 8;
+					
+				case CYAN:
+					return 9;
+					
+				case PURPLE:
+					return 10;
+					
+				case BLUE:
+					return 11;
+					
+				case BROWN:
+					return 12;
+					
+				case GREEN:
+					return 13;
+					
+				case RED:
+					return 14;
+					
+				case BLACK:
+					return 15;
+			}	
+			return -1;
+		}
+		
+		public static BlockColor getBlockColorFromDataValue (int data) {
+			switch (data) {
+				case 0:
+					return BlockColor.WHITE;
+				
+				case 1:
+					return BlockColor.ORANGE;
+					
+				case 2:
+					return BlockColor.MAGENTA;
+				
+				case 3:
+					return BlockColor.LIGHT_BLUE;
+					
+				case 4:
+					return BlockColor.YELLOW;
+				
+				case 5:
+					return BlockColor.LIME;
+					
+				case 6:
+					return BlockColor.PINK;
+				
+				case 7:
+					return BlockColor.GRAY;
+					
+				case 8:
+					return BlockColor.LIGHT_GRAY;
+					
+				case 9:
+					return BlockColor.CYAN;
+					
+				case 10:
+					return BlockColor.PURPLE;
+					
+				case 11:
+					return BlockColor.BLUE;
+					
+				case 12:
+					return BlockColor.BROWN;
+					
+				case 13:
+					return BlockColor.GREEN;
+					
+				case 14:
+					return BlockColor.RED;
+					
+				case 15:
+					return BlockColor.BLACK;
+			}	
+			return null;
+		}
+
 }
